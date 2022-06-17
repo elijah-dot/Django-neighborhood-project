@@ -13,6 +13,28 @@ class Profile(models.Model):
     
     def __str__(self):
         return f'{self.user.username}Profile'
+    
+class Neighborhood(models.Model):
+    name = models.CharField(max_length=50)
+    location = models.CharField(max_length=50)
+    admin = models.ForeignKey(User, on_delete=models.CASCADE)
+    description = models.TextField(max_length=500,blank=True)
+    
+    def __str__(self):
+       return f'{self.name}Neighborhood'
+   
+    def save_hood(self):
+        self.save()
+        
+    def delete_hood(self):
+        self.delete()
+        
+    @classmethod
+    def search_hoods(cls,name):
+        return cls.objects.filter(name_icontains=name).all()
+    
+
+
 
 
 
