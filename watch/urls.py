@@ -14,6 +14,7 @@ urlpatterns = [
     path('hood/(\d+)', views.my_hood, name='my-hood'),
     path('business/(\d+)', views.business, name='hood-business'),
     path('contacts/(\d+)', views.contacts, name='hood-contacts'),
+    path('schools/(\d+)', views.schools, name='hood-schools'),
     path('announcements/(\d+)', views.announcements, name='announcements'),
     path('search/', views.search_results, name='search'),
     

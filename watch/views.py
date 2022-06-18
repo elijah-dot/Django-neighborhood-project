@@ -99,6 +99,16 @@ def contacts(request,hood_id):
     
     return render(request, 'contacts.html', context)
 
+def schools(request,hood_id):
+    hood = Neighbourhood.objects.get(id=hood_id)
+    school = School.objects.filter(hood=hood)
+    context={
+        'hood':hood,
+        'school': school
+    }
+    
+    return render(request, 'school.html', context)
+
 def announcements(request,hood_id):
     hood = Neighbourhood.objects.get(id=hood_id)
     posts = Posts.objects.filter(hood=hood)
