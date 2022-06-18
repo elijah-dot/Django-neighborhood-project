@@ -1,13 +1,13 @@
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import render_to_string
+# from django.core.mail import EmailMultiAlternatives
+# from django.template.loader import render_to_string
 
-def send_welcome_email(name,receiver):
-    subject = 'Welcome to falcon security community'
-    sender = 'wangu.mwangi@student.moringaschool.com'
+# def send_welcome_email(name,receiver):
+#     subject = 'Welcome to falcon security community'
+#     sender = 'wangu.mwangi@student.moringaschool.com'
     
-text_content = render_to_string('email/falconemail.txt',{'name':name})
-html_content = render_to_string('email/falconemail.html',{'name':name})
+# text_content = render_to_string('email/falconemail.txt',{"name":name})
+# html_content = render_to_string('email/falconemail.html',{"name":name})
     
-msg = EmailMultiAlternatives(subject,text_content,sender,[receiver])
-msg.attach_alternative(html_content,'text/html')
-msg.send()
+# msg = EmailMultiAlternatives(subject,text_content,sender,[receiver])
+# msg.attach_alternative(html_content,'text/html')
+# msg.send()
