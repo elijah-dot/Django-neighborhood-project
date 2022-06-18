@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'watch',
     'crispy_forms',
+    'bootstrap5',
 ]
 
 MIDDLEWARE = [
