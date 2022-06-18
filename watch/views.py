@@ -59,8 +59,82 @@ def n_hoods(request):
     context = { 'hoods':hoods }
     return render(request, 'n_hoods.html', context)
 
-def join(request):
+def join(request,id):
     hood = get_object_or_404(Neighbourhood,id=id)
     request.user.profile.hood =hood
     request.user.profile.save()
     return redirect('home')
+
+def leave(request,id):
+    hood = get_object_or_404(Neighbourhood,id=id)
+    request.user.profile.hood =None
+    request.user.profile.save()
+    return redirect('n_hoods')
+
+def my_hood(request,hood_id):
+    hood = Neighbourhood.objects.get(id=hood_id)
+    business=Business.objects.filter(hood=hood)
+    context={"business":business,
+             "hood":hood
+    }
+    
+    return render(request, 'my_hood.html', context)
+
+def business(request,hood_id):
+    hood = Neighbourhood.objects.get(id=hood_id)
+    business = Business.objects.filter(hood=hood)
+    context={
+        'hood':hood,
+        'business': business,
+    }
+    return render(request, 'business.html', context)
+
+def contacts(request,hood_id):
+    hood = Neighbourhood.objects.get(id=hood_id)
+    contacts = Contacts.objects.filter(hood=hood)
+    context={
+        'hood':hood,
+        'contacts': contacts
+    }
+    
+    return render(request, 'contacts.html', context)
+
+def announcements(request,hood_id):
+    hood = Neighbourhood.objects.get(id=hood_id)
+    posts = Posts.objects.filter(hood=hood)
+    current_user = request.user
+    form = PostForm()
+    if request.method == 'POST':
+        form = PostForm(request.POST,request.FILES or None)
+        if form.is_valid():
+            add = form.save(commit=False)
+            add.author = request.user.profile
+            add.hood = hood
+            add.save()
+            return redirect('announcements',hood=id)
+        context = {
+                'hood':hood,
+                'posts':posts,
+                'form':form,
+                 } 
+    return render(request, 'announcements.html', context)
+
+def search_results(request):
+    if request.method == 'GET':
+        name = request.GET.get("query")
+        results = Business.objects.filter(name_icontains=name).all()
+        message = f"name"
+        context = {
+            'results': results,
+            'message': message
+        }
+        return render(request, 'search.html', context)
+    else:
+        message = "invalid input"
+        return render(request, 'search.html', {'message': message})
+    
+
+        
+
+    
+
