@@ -116,7 +116,7 @@ Admin should:
 * In your terminal:
 
         $ git clone https://github.com/elijah-dot/Django-neighborhood-project
-        $ cd Awards
+        $ cd neighborhood
 
 ## Running the Application
 * Creating the virtual environment
