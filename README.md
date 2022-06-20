@@ -144,7 +144,7 @@ Admin should:
 
 ## Known Bugs
 
-* Multiple votes can be done on single project
+* search button is not working
 
 ## licence
 
