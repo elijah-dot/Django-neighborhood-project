@@ -1,11 +1,8 @@
 from django.contrib import admin
-from .models import Profile,Neighbourhood,Business,Contacts,School,Posts
+from .models import Profile, NeighbourHood, Business, Post
 
-# Register your models here.
+
 admin.site.register(Profile)
+admin.site.register(NeighbourHood)
 admin.site.register(Business)
-admin.site.register(Contacts)
-admin.site.register(School)
-admin.site.register(Posts)
-admin.site.register(Neighbourhood)
-
+admin.site.register(Post)

@@ -6,47 +6,43 @@
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+      <div class="collapse navbar-collapse ms-auto " id="navbarSupportedContent" style="margin-left:20px ;">
+        <ul class="navbar-nav ms-auto ">
            
            {% if user.is_authenticated %}
           <li class="nav-item ">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <a class="nav-link active" aria-current="page" href="{% url 'hood'%}" style="margin-left:20px ;">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" href="{% url 'new-hood' %}">Add Neighbourhood</a>
+            <a class="nav-link active" href="{% url 'new-hood' %}" style="margin-left:20px ;">Add Neighbourhood</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" href="{% url 'edit-profile' user.username %}">Edit profile</a>
+            <a class="nav-link active" href="{% url 'edit-profile' user.username %}" style="margin-left:20px ;" >Edit profile</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" href="{% url 'logout' %}">Logout</a>
+            <a class="nav-link active" href="{% url 'logout' %}" style="margin-left:20px ;">Logout</a>
           </li>
           {% if user.profile.neighbourhood %}
-          <li class="nav-item">
-            <a class="nav-link active" href="{% url 'single-hood' user.profile.neighbourhood.id %}">{{user.profile.neighbourhood.name}}</a>
+          <li class="nav-item" >
+            <a class="nav-link active" href="{% url 'single-hood' user.profile.neighbourhood.id %}" style="color: rgb(167, 243, 14);">{{user.profile.neighbourhood.name}}</a>
           </li>
           {% else %}
           <li class="nav-item active">
-            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">No hood yet</a>
+            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true" style="color:red;">No hood yet</a>
           </li>
           {% endif %}
           <li class="nav-item">
-            <a class="nav-link active" href="#" tabindex="-1" aria-disabled="true">profile</a>
+            <a class="nav-link active" href="#" tabindex="-1" aria-disabled="true" style="margin-left:20px ;">profile</a>
           </li>
           {% else %}
           <li class="nav-item ">
-            <a class="nav-link active" aria-current="page" href="#">login</a>
+            <a class="nav-link active" aria-current="page" href="/accounts/login" style="margin-left:20px ;">login</a>
         </li> 
         <li class="nav-item ">
-            <a class="nav-link active" aria-current="page" href="#">sign up</a>
+            <a class="nav-link active" aria-current="page" href="/accounts/register" style="margin-left:20px ;">sign up</a>
         </li>
         </ul>
         {% endif %}
-        <form class="d-flex">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
         
       </div>
     </div>

@@ -3,11 +3,12 @@
 {% load static %}
 {% load bootstrap5 %}
 {% include 'navbar.html' %}
-<div class="wrapper">
+<div class="wrapper" style="height: 100px;width: 500px;color: rgb(152, 246, 11);margin-left: 700px;margin-top: 60px;font-size: 21px;">
+    <h2 style="text-align:center;color:rgb(152, 246, 11);font-weight:bold;font-size:34px">Sign up</h2>
 <form class="login" form action="/accounts/register/" method="post">
   {% csrf_token %}
   {% bootstrap_form form%}
-  <button class="register-button" button type="submit" title="register" >Sign up</button>
+  <button class="btn btn-warning register-button" button type="submit" title="register" >Sign up</button>
   <input type="hidden" name="next" value="{{next}}">
   <p>have an account? <a class="signup" href="/accounts/login">Log-In</a></p>
 </form>

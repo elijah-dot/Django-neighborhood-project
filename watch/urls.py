@@ -1,21 +1,16 @@
 from django.urls import path,include
 from . import views
-from django.contrib.auth import views as auth_views
 
-urlpatterns = [
-    path('',views.home, name='home'),
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('register/', views.register, name='register'),  
-    path('logout/', auth_views.LogoutView.as_view(template_name='registration/logout.html'), name='logout'),
-    path('profile/', views.profile, name='profile'), 
-    path('hoods/', views.n_hoods, name='n_hoods'), 
-    path('join/(\d+)', views.join, name='join-hood'), 
-    path('leave/(\d+)', views.leave, name='leave-hood'),
-    path('hood/(\d+)', views.my_hood, name='my-hood'),
-    path('business/(\d+)', views.business, name='hood-business'),
-    path('contacts/(\d+)', views.contacts, name='hood-contacts'),
-    path('schools/(\d+)', views.schools, name='hood-schools'),
-    path('announcements/(\d+)', views.announcements, name='announcements'),
-    path('search/', views.search_results, name='search'),
-    
+
+urlpatterns=[
+    path('', views.hoods, name='hood'),
+    path('new-hood/', views.create_hood, name='new-hood'),
+    path('profile/<username>', views.profile, name='profile'),
+    path('profile/<username>//edit/', views.edit_profile, name='edit-profile'),
+    path('join_hood/<id>', views.join_hood, name='join-hood'),
+    path('leave_hood/<id>', views.leave_hood, name='leave-hood'),
+    path('single_hood/<hood_id>', views.single_hood, name='single-hood'),
+    path('<hood_id>//new-post', views.create_post, name='post'),
+    path('<hood_id>/members', views.hood_members, name='members'),
+    path('search/', views.search_business, name='search'),
 ]

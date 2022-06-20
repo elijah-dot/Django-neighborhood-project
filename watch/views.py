@@ -1,150 +1,123 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from django.contrib.auth.models import User
-from .forms import UserRegistrationForm,ProfileUpdateForm,UserUpdateForm,PostForm
-from .models import Neighbourhood,Profile,Business,Contacts,Posts
+from django.http  import HttpResponse,Http404
+from .forms import SignupForm, BusinessForm
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-# from .email import send_welcome_email
-
+from .models import NeighbourHood, Profile, Business, Post
+from .forms import UpdateProfileForm, NeighbourHoodForm, PostForm
+from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect
 # Create your views here.
-def home(request):
-    hoods = Neighbourhood.objects.all()
-    context = {
-        'hoods':hoods
-    }
-    
-    return render(request, 'home.html',context)
 
-def register(request):
+@login_required(login_url='/accounts/login/')
+def hoods(request):
+    all_hoods = NeighbourHood.objects.all()
+    all_hoods = all_hoods[::-1]
+    params = {
+        'all_hoods': all_hoods,
+    }
+    return render(request, 'all_hoods.html', params)
+
+
+def create_hood(request):
     if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
+        form = NeighbourHoodForm(request.POST, request.FILES)
+        if form.is_valid():
+            hood = form.save(commit=False)
+            hood.admin = request.user.profile
+            hood.save()
+            return redirect('hood')
+    else:
+        form = NeighbourHoodForm()
+    return render(request, 'newhood.html', {'form': form})
+
+
+def single_hood(request, hood_id):
+    hood = NeighbourHood.objects.get(id=hood_id)
+    business = Business.objects.filter(neighbourhood=hood)
+    posts = Post.objects.filter(hood=hood)
+    posts = posts[::-1]
+    if request.method == 'POST':
+        form = BusinessForm(request.POST)
+        if form.is_valid():
+            b_form = form.save(commit=False)
+            b_form.neighbourhood = hood
+            b_form.user = request.user.profile
+            b_form.save()
+            return redirect('single-hood', hood.id)
+    else:
+        form = BusinessForm()
+    params = {
+        'hood': hood,
+        'business': business,
+        'form': form,
+        'posts': posts
+    }
+    return render(request, 'single_hood.html', params)
+
+
+def hood_members(request, hood_id):
+    hood = NeighbourHood.objects.get(id=hood_id)
+    members = Profile.objects.filter(neighbourhood=hood)
+    return render(request, 'members.html', {'members': members})
+
+
+def create_post(request, hood_id):
+    hood = NeighbourHood.objects.get(id=hood_id)
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.hood = hood
+            post.user = request.user.profile
+            post.save()
+            return redirect('single-hood', hood.id)
+    else:
+        form = PostForm()
+    return render(request, 'post.html', {'form': form})
+
+
+def join_hood(request, id):
+    neighbourhood = get_object_or_404(NeighbourHood, id=id)
+    request.user.profile.neighbourhood = neighbourhood
+    request.user.profile.save()
+    return redirect('hood')
+
+
+def leave_hood(request, id):
+    hood = get_object_or_404(NeighbourHood, id=id)
+    request.user.profile.neighbourhood = None
+    request.user.profile.save()
+    return redirect('hood')
+
+
+def profile(request, username):
+    return render(request, 'profile.html')
+
+
+def edit_profile(request, username):
+    user = User.objects.get(username=username)
+    if request.method == 'POST':
+        form = UpdateProfileForm(request.POST, request.FILES, instance=request.user.profile)
         if form.is_valid():
             form.save()
-            username = form.cleaned_data.get('username')
-            name = form.cleaned_data['username']
-            email = form.cleaned_data['email']
-            # send_welcome_email(name,email)
-
-            messages.success(request, f'Account created successfully!')
-            return redirect('login')
+            return redirect('profile', user.username)
     else:
-        form = UserRegistrationForm()
-    return render(request, 'registration/registration_form.html',{'form':form})
+        form = UpdateProfileForm(instance=request.user.profile)
+    return render(request, 'editprofile.html', {'form': form})
 
-def profile(request):
-    user=request.user
-    if request.method == 'POST':
-        user_form = UserUpdateForm(request.POST,instance=request.user)
-        profile_form = ProfileUpdateForm(request.POST,request.Files,instance=request.user.profile)
-        
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            messages.success(request, "User updated successfully")
-            return redirect('profile')
-        
-    else:
-        user_form=UserUpdateForm(instance=request.user)
-        profile_form=ProfileUpdateForm(instance=request.user.profile)
-        
-    context={
-        'user_form': user_form,
-        'profile_form': profile_form,
-        'user':user,
-    }
-    return render(request, 'profile.html', context)
 
-def n_hoods(request):
-    hoods = Neighbourhood.objects.all()
-    context = { 'hoods':hoods }
-    return render(request, 'n_hoods.html', context)
-
-def join(request,id):
-    hood = get_object_or_404(Neighbourhood,id=id)
-    request.user.profile.hood =hood
-    request.user.profile.save()
-    return redirect('home')
-
-def leave(request,id):
-    hood = get_object_or_404(Neighbourhood,id=id)
-    request.user.profile.hood =None
-    request.user.profile.save()
-    return redirect('n_hoods')
-
-def my_hood(request,hood_id):
-    hood = Neighbourhood.objects.get(id=hood_id)
-    business=Business.objects.filter(hood=hood)
-    context={"business":business,
-             "hood":hood
-    }
-    
-    return render(request, 'my_hood.html', context)
-
-def business(request,hood_id):
-    hood = Neighbourhood.objects.get(id=hood_id)
-    business = Business.objects.filter(hood=hood)
-    context={
-        'hood':hood,
-        'business': business,
-    }
-    return render(request, 'business.html', context)
-
-def contacts(request,hood_id):
-    hood = Neighbourhood.objects.get(id=hood_id)
-    contacts = Contacts.objects.filter(hood=hood)
-    context={
-        'hood':hood,
-        'contacts': contacts
-    }
-    
-    return render(request, 'contacts.html', context)
-
-def schools(request,hood_id):
-    hood = Neighbourhood.objects.get(id=hood_id)
-    school = School.objects.filter(hood=hood)
-    context={
-        'hood':hood,
-        'school': school
-    }
-    
-    return render(request, 'school.html', context)
-
-def announcements(request,hood_id):
-    hood = Neighbourhood.objects.get(id=hood_id)
-    posts = Posts.objects.filter(hood=hood)
-    current_user = request.user
-    form = PostForm()
-    if request.method == 'POST':
-        form = PostForm(request.POST,request.FILES or None)
-        if form.is_valid():
-            add = form.save(commit=False)
-            add.author = request.user.profile
-            add.hood = hood
-            add.save()
-            return redirect('announcements',hood=id)
-        context = {
-                'hood':hood,
-                'posts':posts,
-                'form':form,
-                 } 
-    return render(request, 'announcements.html', context)
-
-def search_results(request):
+def search_business(request):
     if request.method == 'GET':
-        name = request.GET.get("query")
-        results = Business.objects.filter(name_icontains=name).all()
-        message = f"name"
-        context = {
+        name = request.GET.get("title")
+        results = Business.objects.filter(name__icontains=name).all()
+        print(results)
+        message = f'name'
+        params = {
             'results': results,
             'message': message
         }
-        return render(request, 'search.html', context)
+        return render(request, 'results.html', params)
     else:
-        message = "invalid input"
-        return render(request, 'search.html', {'message': message})
-    
-
-        
-
-    
-
+        message = "You haven't searched for any image category"
+    return render(request, "results.html")

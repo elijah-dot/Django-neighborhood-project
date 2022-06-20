@@ -3,14 +3,16 @@
 {% load bootstrap5 %}
 
 {% block content %}
-<div class="wrapper">
+{% include 'navbar.html'%}
+<div class="wrapper" style="height: 100px;width: 500px;color: rgb(152, 246, 11);margin-left: 700px;margin-top: 60px;font-size: 21px;">
+    <h2 style="text-align:center;color:rgb(152, 246, 11);font-weight:bold;font-size:34px">Login</h2>
 <form class="login" form action="/accounts/login/" method="post">
   {% csrf_token %}
   {% bootstrap_form form%}
-  <button class="login-button" button type="submit" title="login" >Log In</button>
+  <button class="btn btn-warning login-button" button type="submit" title="login" >Log In</button>
   <input type="hidden" name="next" value="{{next}}">
   <p>Don't have an account? <a class="signup" href="/accounts/register">Sign Up</a></p>
 </form>
-<footer><a target="blank style" style ="color: #FFFFFF;background-color:black"; href="https://github.com/AndrewIndeche"><strong>by Andrew</strong></a></footer>
+
 </div>
 {% endblock %}
