@@ -148,7 +148,7 @@ Admin should:
 
 ## licence
 
-copyright (c) [2019] [https://github.com/elijah-dot/Django-neighborhood-project/blob/master/LICENSE]
+copyright (c) [2022] [https://github.com/elijah-dot/Django-neighborhood-project/blob/master/LICENSE]
 
 
 ## authors info
